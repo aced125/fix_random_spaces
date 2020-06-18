@@ -25,6 +25,7 @@ def cli(verbose):
 
 
 @cli.command()
+@click.argument("conf-file", type=click.Path(exists=True), default=None)
 @click.option(
     "--hparams",
     default=json.dumps(
@@ -58,8 +59,12 @@ def cli(verbose):
         }
     ),
 )
-def train(hparams):
-    hparams = OmegaConf.create(hparams)
+def train(conf_file, hparams):
+    if conf_file is None:
+        hparams = OmegaConf.create(hparams)
+    else:
+        hparams = OmegaConf.load(conf_file)
+    print(hparams.pretty())
     tokenizer = BertTokenizer.from_pretrained("bert-base-cased")
     train_dataset = utils.prepare_dataset(
         tokenizer, "train", hparams.max_length, hparams.num_datapoints
