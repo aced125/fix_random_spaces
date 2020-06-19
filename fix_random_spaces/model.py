@@ -82,8 +82,8 @@ class Model(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss, logits, *_ = self(batch)
-        output = {"loss": loss, "log": {"loss": loss}}
-        # self.logger.log_metrics(logs)
+        self.logger.log_metrics({"loss": loss.cpu()})
+        output = {"loss": loss}
         return output
 
     def validation_step(self, batch, batch_idx):
