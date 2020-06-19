@@ -77,7 +77,7 @@ class Model(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         loss, logits, *_ = self(batch)
         logs = {"loss": loss}
-        self.logger.log_metrics(logs)
+        # self.logger.log_metrics(logs)
         return logs
 
     def validation_step(self, batch, batch_idx):
@@ -112,7 +112,7 @@ class Model(pl.LightningModule):
 
     def _shared_val_end(self, output, prefix):
         output = self.collate(output)
-        self.logger.log_metrics(output)
+        # self.logger.log_metrics(output)
         return output
 
     def configure_optimizers(self):
