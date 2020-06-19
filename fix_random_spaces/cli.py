@@ -68,7 +68,7 @@ def train(conf_file, hparams):
 
     log = WandbLogger(name=hparams.name, project=hparams.project)
     checkpoint = pl.callbacks.ModelCheckpoint(
-        filepath="checkpoints", verbose=True, monitor="val_loss", mode="min"
+        filepath="checkpoints/", verbose=True, monitor="val_loss", mode="min"
     )
     trainer = pl.Trainer(
         logger=log, checkpoint_callback=checkpoint, **hparams.trainer_kwargs
