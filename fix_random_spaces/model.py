@@ -161,5 +161,5 @@ class Model(pl.LightningModule):
             if tensor.dim() == 0:
                 return_dict[key] = torch.stack([x[key] for x in output]).mean()
             elif tensor.dim() == 1:
-                return_dict[key] = torch.cat([x[key] for x in output])
+                return_dict[key] = torch.cat([x[key] for x in output]).mean()
         return return_dict
