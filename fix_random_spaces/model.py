@@ -35,10 +35,16 @@ class Model(pl.LightningModule):
 
     def prepare_data(self) -> None:
         self.train_dataset = utils.prepare_dataset(
-            self.tokenizer, "train", self.hparams.max_length, self.hparams.num_datapoints
+            self.tokenizer,
+            "train",
+            self.hparams.max_length,
+            self.hparams.num_datapoints,
         )
         self.val_dataset = utils.prepare_dataset(
-            self.tokenizer, "validation", self.hparams.max_length, self.hparams.num_datapoints
+            self.tokenizer,
+            "validation",
+            self.hparams.max_length,
+            self.hparams.num_datapoints,
         )
         self.test_dataset = utils.prepare_dataset(
             self.tokenizer, "test", self.hparams.max_length, self.hparams.num_datapoints
@@ -76,9 +82,9 @@ class Model(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss, logits, *_ = self(batch)
-        logs = {"loss": loss}
+        output = {"loss": loss, "log": {"loss": loss}}
         # self.logger.log_metrics(logs)
-        return logs
+        return output
 
     def validation_step(self, batch, batch_idx):
         return self._shared_val_step(batch, batch_idx, "val")
@@ -112,8 +118,9 @@ class Model(pl.LightningModule):
 
     def _shared_val_end(self, output, prefix):
         output = self.collate(output)
+        logs = {"log": output, f"{prefix}_loss": output[f"{prefix}_loss"]}
         # self.logger.log_metrics(output)
-        return output
+        return logs
 
     def configure_optimizers(self):
         opt_class = getattr(torch_optimizer, self.hparams.optimizer)
