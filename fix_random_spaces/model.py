@@ -29,9 +29,20 @@ class Model(pl.LightningModule):
         )  # initialize Bert2Bert
         self.tokenizer = BertTokenizer.from_pretrained("bert-base-cased")
         self.collater = utils.Collater(self.tokenizer, self.hparams.max_length)
-        self.train_dataset = train_dataset
-        self.val_dataset = val_dataset
-        self.test_dataset = test_dataset
+        # self.train_dataset = train_dataset
+        # self.val_dataset = val_dataset
+        # self.test_dataset = test_dataset
+
+    def prepare_data(self) -> None:
+        self.train_dataset = utils.prepare_dataset(
+            self.tokenizer, "train", self.hparams.max_length, self.hparams.num_datapoints
+        )
+        self.val_dataset = utils.prepare_dataset(
+            self.tokenizer, "validation", self.hparams.max_length, self.hparams.num_datapoints
+        )
+        self.test_dataset = utils.prepare_dataset(
+            self.tokenizer, "test", self.hparams.max_length, self.hparams.num_datapoints
+        )
 
     def train_dataloader(self):
         return tud.DataLoader(

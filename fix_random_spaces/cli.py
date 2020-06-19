@@ -65,19 +65,10 @@ def train(conf_file, hparams):
     else:
         hparams = OmegaConf.load(conf_file)
     print(hparams.pretty())
-    tokenizer = BertTokenizer.from_pretrained("bert-base-cased")
-    train_dataset = utils.prepare_dataset(
-        tokenizer, "train", hparams.max_length, hparams.num_datapoints
-    )
-    val_dataset = utils.prepare_dataset(
-        tokenizer, "validation", hparams.max_length, hparams.num_datapoints
-    )
-    test_dataset = utils.prepare_dataset(
-        tokenizer, "test", hparams.max_length, hparams.num_datapoints
-    )
+
     log = WandbLogger(name=hparams.name, project=hparams.project)
     trainer = pl.Trainer(logger=log, **hparams.trainer_kwargs)
-    model = Model(hparams, train_dataset, val_dataset, test_dataset)
+    model = Model(hparams)
     trainer.fit(model)
 
 
